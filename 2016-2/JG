@@ -65,3 +65,82 @@ SRV 记录：一般是为Microsoft的活动目录设置时的应用。DNS可以�
 为了活动目录能够正常的工作，DNS服务器必须支持服务定位（SRV）资源记录，资源记录把服务名字映射为提供服务的服务器名字。活动目录客户和域控制器使用SRV资源记录决定域控制器的IP地址。
 _sip._tcp.zonetransfer.me -  服务的名称，包括协议和TCP / UDP的名字，在这里它是运行在TCP协议
 
+TXT记录的文本信息和应该检查的有价值的信息。第一个泄露了一个与系统管理有关的人的电话号码和电子邮件地址。
+第二个显示该网站已被验证在谷歌应用程序帐户中使用。
+三号是一个方式，GoDaddy以检查申请一个SSL证书拥有域名，这种信息可能是有用的如果它泄漏服务正在使用或联系信息
+
+SRV 记录：一般是为Microsoft的活动目录设置时的应用。DNS可以独立于活动目录，但是活动目录必须有DNS的帮助才能工作。
+为了活动目录能够正常的工作，DNS服务器必须支持服务定位（SRV）资源记录，资源记录把服务名字映射为提供服务的服务器名字。活动目录客户和域控制器使用SRV资源记录决定域控制器的IP地址。
+_sip._tcp.zonetransfer.me -  服务的名称，包括协议和TCP / UDP的名字，在这里它是运行在TCP协议
+
+
+实验步骤：
+
+在linux中进行实验操作，输入dig axfr @nsztm1.digi.ninja zonetransfer.me
+可以得到输出结果，输出结果并不是像实验指导里面一样
+输入命令得到soa记录：dig nsztml.digi.nninja zonetransfer.me SOA +noall +answer （截图在ppt里面）
+此条目显示有关主名称服务器的信息、管理员的联系方式和其他关键信息，这是它如何分解的信息：
+
+nsztm1.digi.ninja.  源主机
+robin.digi.ninja. 电子邮件-负责管理域的区域文件的人的电子邮件地址，请与联系。请注意，"."而不是使用"@"中的电子邮件名称。
+2014101601   此区域文件的修订号。每次更改区域文件时，增加这个数字。增加这个值是每一次的变化是重要的，这样的变化将分发到任何辅助DNS服务器。
+172800  二级名称服务器应在请求更改请求之间等待的时间
+900 重试时间 如果它未能正确刷新，则主名称服务器应等待重试时间（秒）
+1209600  过期时间 Expire time
+3600 最小生存时间
+负责人领域提供了一个电子邮件地址，可作为其他攻击的一部分，
+并从目前的序列号，如果它是基于日期和定期检查，它的改变可能表明该公司的一些活动。
+
+zonetransfer.me.        7200    IN      NS      nsztm1.digi.ninja.
+zonetransfer.me.        7200    IN      NS      nsztm2.digi.ninja.
+
+
+MX记录：dig nsztml.digi.nninja zonetransfer.me MX +noall +answer
+zonetransfer.me.	7200	IN	MX	0 ASPMX.L.GOOGLE.COM.
+zonetransfer.me.	7200	IN	MX	10 ALT1.ASPMX.L.GOOGLE.COM.
+zonetransfer.me.	7200	IN	MX	10 ALT2.ASPMX.L.GOOGLE.COM.
+zonetransfer.me.	7200	IN	MX	20 ASPMX2.GOOGLEMAIL.COM.
+zonetransfer.me.	7200	IN	MX	20 ASPMX3.GOOGLEMAIL.COM.
+zonetransfer.me.	7200	IN	MX	20 ASPMX4.GOOGLEMAIL.COM.
+zonetransfer.me.	7200	IN	MX	20 ASPMX5.GOOGLEMAIL.COM.
+MX记录表明在邮件要发送，这些都是标准的邮件服务器，谷歌表示该公司使用Gmail和谷歌应用程序来处理他们的电子邮件。
+
+dr.zonetransfer.me.	300	IN	LOC	53 20 56.557 N 1 38 33.525 W 0.00m 1m 10000m 10m
+LOC是短暂的位置，可以用来记录一个纬度/经度值。值被存储在度/分钟/秒，
+
+onetransfer.me.	301	IN	TXT	"Remember to call or email Pippa on +44 123 4567890 or pippa@zonetransfer.me when making DNS changes"
+zonetransfer.me.	301	IN	TXT	"google-site-verification=tyP28J7JAUHA9fw2sHXMgcCC0I6XBmmoVi04VlMewxA"
+dzc.zonetransfer.me.	7200	IN	TXT	"AbCdEfG"
+info.zonetransfer.me.	7200	IN	TXT	"ZoneTransfer.me service provided by Robin Wood - robin@digininja.org. See www.digininja.org/blog/zonetransferme.php for more information
+TXT记录的文本信息和应该检查的有价值的信息。第一个泄露了一个与系统管理有关的人的电话号码和电子邮件地址。
+第二个显示该网站已被验证在谷歌应用程序帐户中使用。
+三，GoDaddy以检查申请一个SSL证书拥有域名，这种信息可能是有用的如果它泄漏服务正在使用或联系信息
+
+testing.zonetransfer.me. 301	IN	CNAME	www.zonetransfer.me.
+staging.zonetransfer.me. 7200	IN	CNAME	www.sydneyoperahouse.com.
+公司有一个测试网站，它位于同一个服务器上的主要网站。
+测试网站往往是不太安全的比主要网站，所以可能是一个更好的攻击向量。
+
+164.180.147.217.in-addr.arpa.zonetransfer.me. 7200 IN PTR www.zonetransfer.me.
+
+_sip._tcp.zonetransfer.me. 14000 IN	SRV	0 0 5060 www.zonetransfer.me.
+SRV记录是一个服务记录，它是用来显示协议识别服务、主机和端口上运行它。这是经常使用的VoIP设置显示SIP服务器的位置，但可用于任何类型的服务。
+SRV记录可以显示一些什么服务目标的公司正在运行的非常有用的信息
+_sip._tcp.zonetransfer.me -  服务的名称，包括协议和TCP / UDP的名字，在这里它是运行在TCP协议
+14000 IN SRV   标准的TTL，DNS值，DNS和类型 
+0 服务的优先级，如果有多个服务，这表明先尝试
+0 重量，当两个服务有相同的优先级，这表明这是首选
+5060 服务正在监听的端口
+www.zonetransfer.me. 主机提供服务
+
+zonetransfer.me.	7200	IN	A	217.147.177.157
+www.zonetransfer.me.	7200	IN	A	217.147.177.157
+vpn.zonetransfer.me.	4000	IN	A	174.36.59.154
+owa.zonetransfer.me.	7200	IN	A	207.46.197.32
+office.zonetransfer.me.	7200	IN	A	4.23.39.254
+canberra_office.zonetransfer.me. 7200 IN A	202.14.81.230
+dc_office.zonetransfer.me. 7200	IN	A	143.228.181.132
+
+个记录是DNS记录的主要类型，常常把大多数的记录，他们的名字到IP地址的映射。
+
+
